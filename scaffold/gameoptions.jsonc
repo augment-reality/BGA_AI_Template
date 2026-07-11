@@ -1,0 +1,17 @@
+{
+  // Game VARIANTS (affect rules; chosen at table creation). Option IDs: 100–199.
+  // Docs: https://en.doc.boardgamearena.com/Options_and_preferences:_gameoptions.json,_gamepreferences.json
+  //
+  // IMPORTANT: an option is only real once the server READS it (setupNewGame $options[100]
+  // or $this->tableOptions->get(100)) — otherwise the lobby shows it and the game ignores it.
+  //
+  // Worked example (delete when adding real options):
+  // "100": {
+  //     "name": "Game length",
+  //     "values": {
+  //         "1": { "name": "Standard" },
+  //         "2": { "name": "Short game", "tmdisplay": "Short game" }
+  //     },
+  //     "default": 1
+  // }
+}

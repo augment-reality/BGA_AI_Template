@@ -1,0 +1,62 @@
+/**
+ * Your Game Name — stylesheet
+ * (If using the SCSS pipeline, this file is generated from src/scss/Game.scss — edit there.)
+ */
+
+/* ─── Layout ─────────────────────────────────────────────────────────────── */
+
+#yourgame-board {
+    position: relative;      /* children position absolutely against this */
+    /* Give the board a definite size once art exists, e.g.:
+       width: 100%; max-width: 960px; aspect-ratio: 1600 / 1000; */
+}
+
+#player-tables {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.yourgame-player-area {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    min-width: 240px;
+}
+
+.yourgame-player-name {
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+/* ─── Cards (sprite sheet in img/cards.jpg — verify the file EXISTS first) ── */
+
+.yourgame-player-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 100px;
+}
+
+.yourgame-card {
+    width: 73px;
+    height: 98px;
+    border-radius: 5px;
+    border: 1px solid #888;
+    background-color: #eee;
+    /* background-image: url('img/cards.jpg');
+       background-size: 400% 300%;   <- cols*100% rows*100% (Safari-safe percentages)
+    */
+    transition: transform 0.15s ease;
+}
+
+/* .yourgame-card-type-1 { background-position: 0% 0%; } */
+
+.yourgame-playable {
+    cursor: pointer;
+    outline: 2px solid gold;
+}
+.yourgame-playable:hover {
+    transform: translateY(-6px);
+}

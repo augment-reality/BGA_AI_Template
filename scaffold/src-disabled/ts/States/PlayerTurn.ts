@@ -1,0 +1,48 @@
+import { Game } from "../Game";
+
+/**
+ * One State class per declared PHP state. onEnteringState, onLeavingState and
+ * onPlayerActivationChange are predefined names called by the framework.
+ */
+export class PlayerTurn {
+    constructor(private game: Game, private bga: Bga<YourGamePlayer, YourGameGamedatas>) {
+    }
+
+    onEnteringState(args: PlayerTurnArgs, isCurrentPlayerActive: boolean) {
+        this.bga.statusBar.setTitle(isCurrentPlayerActive ?
+            _('${you} must play a card or pass') :
+            _('${actplayer} must play a card or pass')
+        );
+
+        if (isCurrentPlayerActive) {
+            args.playableCardsIds.forEach(cardId => {
+                const el = document.getElementById(`card-${cardId}`);
+                if (el) {
+                    el.classList.add('yourgame-playable');
+                    el.onclick = () => this.onCardClick(cardId);
+                }
+            });
+
+            this.bga.statusBar.addActionButton(_('Pass'),
+                () => this.bga.actions.performAction("actPass"), { color: 'secondary' });
+        }
+    }
+
+    onLeavingState(args: PlayerTurnArgs, isCurrentPlayerActive: boolean) {
+        document.querySelectorAll('.yourgame-playable').forEach(el => {
+            el.classList.remove('yourgame-playable');
+            (el as HTMLElement).onclick = null;
+        });
+    }
+
+    /**
+     * Called when the current player becomes active/inactive in a
+     * MULTIPLE_ACTIVE_PLAYER state. Delete if this state is single-active.
+     */
+    onPlayerActivationChange(args: PlayerTurnArgs, isCurrentPlayerActive: boolean) {
+    }
+
+    onCardClick(card_id: number) {
+        this.bga.actions.performAction("actPlayCard", { card_id });
+    }
+}

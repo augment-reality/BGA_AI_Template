@@ -1,0 +1,19 @@
+{
+    // Statistics shown at game end. Every stat declared here MUST be initStat'd in
+    // setupNewGame and incremented somewhere — otherwise the stats page breaks.
+    "table": {
+        "turns_played": {
+            "id": 10,
+            "name": "Turns played",
+            "type": "int"
+        }
+    },
+
+    "player": {
+        "cards_played": {
+            "id": 10,
+            "name": "Cards played",
+            "type": "int"
+        }
+    }
+}

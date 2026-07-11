@@ -1,0 +1,15 @@
+{
+  // Per-player UI preferences (no rule effect). IDs: 100–199.
+  // The cssPref class is applied to the <html> element automatically — pure-CSS prefs need no JS.
+  //
+  // Worked example (delete or adapt):
+  // "100": {
+  //     "name": "Card display",
+  //     "needReload": false,
+  //     "values": {
+  //         "1": { "name": "Fan", "cssPref": "yourgame_fan" },
+  //         "2": { "name": "Row", "cssPref": "yourgame_row" }
+  //     },
+  //     "default": 1
+  // }
+}

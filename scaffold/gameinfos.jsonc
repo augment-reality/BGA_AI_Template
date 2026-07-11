@@ -1,0 +1,45 @@
+// Game meta-information. Docs: http://en.doc.boardgamearena.com/Game_meta-information:_gameinfos.inc.php
+{
+    // Name of the game in English (basis for translation)
+    "game_name": "Your Game Name",
+
+    // Game publisher ("" if none) and its website / BGG ids
+    "publisher": "",
+    "publisher_website": "",
+    "publisher_bgg_id": 0,
+    "bgg_id": 0,
+
+    // Player counts that can be played
+    "players": [2, 3, 4],
+    "suggest_player_number": 3,
+    "not_recommend_player_number": null,
+
+    // Estimated game duration, in minutes
+    "estimated_duration": 30,
+
+    // Time in seconds added to a player when "giveExtraTime" is called
+    "fast_additional_time": 18,
+    "medium_additional_time": 25,
+    "slow_additional_time": 50,
+
+    // Tie breaker description (leave empty unless using player_score_aux)
+    "tie_breaker_description": "",
+
+    "losers_not_ranked": false,
+    "solo_mode_ranked": false,
+    "is_coop": 0,
+    "language_dependency": false,
+
+    // Colors attributed to players (must cover max player count)
+    "player_colors": ["4685FF", "C22D2D", "C8CA25", "2EA232", "913CB3"],
+    "favorite_colors_support": true,
+    "disable_player_order_swap_on_rematch": false,
+
+    // Game interface width range (pixels)
+    "game_interface_width": {
+        "min": 740
+    },
+
+    // Trigger an exception when PHP detects warnings — keep true during development
+    "exception_on_warning": true
+}

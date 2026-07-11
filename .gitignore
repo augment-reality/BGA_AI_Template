@@ -1,0 +1,12 @@
+# Claude Code local settings (may contain machine-specific paths)
+.claude/settings.local.json
+
+# SFTP credentials (BGA Studio deploy configs)
+**/.vscode/sftp.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/

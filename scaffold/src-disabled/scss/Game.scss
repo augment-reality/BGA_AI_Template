@@ -1,0 +1,55 @@
+/**
+ * Your Game Name — SCSS source. Compiles to yourgame.css via `npm run build:scss`.
+ */
+
+/* ─── Layout ─────────────────────────────────────────────────────────────── */
+
+#yourgame-board {
+    position: relative;
+}
+
+#player-tables {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.yourgame-player-area {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    min-width: 240px;
+}
+
+.yourgame-player-name {
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+/* ─── Cards ──────────────────────────────────────────────────────────────── */
+
+.yourgame-player-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 100px;
+}
+
+.yourgame-card {
+    width: 73px;
+    height: 98px;
+    border-radius: 5px;
+    border: 1px solid #888;
+    background-color: #eee;
+    transition: transform 0.15s ease;
+
+    &.yourgame-playable {
+        cursor: pointer;
+        outline: 2px solid gold;
+
+        &:hover {
+            transform: translateY(-6px);
+        }
+    }
+}
