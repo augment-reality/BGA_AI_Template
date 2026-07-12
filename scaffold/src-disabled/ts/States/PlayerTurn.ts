@@ -9,11 +9,10 @@ export class PlayerTurn {
     }
 
     onEnteringState(args: PlayerTurnArgs, isCurrentPlayerActive: boolean) {
-        this.bga.statusBar.setTitle(isCurrentPlayerActive ?
-            _('${you} must play a card or pass') :
-            _('${actplayer} must play a card or pass')
-        );
-
+        // Status bar title comes from the state's description/descriptionMyTurn
+        // (PlayerTurn.php) — the framework substitutes ${actplayer}/${you} itself.
+        // Don't override it here with setTitle(); a manual call doesn't get that
+        // substitution and leaves ${actplayer} blank for non-active players.
         if (isCurrentPlayerActive) {
             args.playableCardsIds.forEach(cardId => {
                 const el = document.getElementById(`card-${cardId}`);

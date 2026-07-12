@@ -19,7 +19,39 @@
     border: 1px solid #ccc;
     border-radius: 6px;
     padding: 8px;
+}
+
+// Own area claims the full row, so flex-wrap pushes every opponent onto a
+// fresh line beneath it instead of competing for horizontal space. Content
+// is centered within it and given a soft panel background so the wide box
+// doesn't read as a bare, near-empty outline.
+.yourgame-player-area-own {
+    flex: 1 1 100%;
     min-width: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 14px;
+    border-color: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.01));
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+
+    @media (prefers-color-scheme: dark) {
+        border-color: rgba(255, 255, 255, 0.2);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+}
+
+// Opponents typically show less content than your own hand (e.g. just a
+// card-back + count) — let them shrink to that content instead of matching
+// the own area's width.
+.yourgame-player-area-other {
+    flex: 0 1 auto;
+    min-width: 0;
+    padding: 6px;
 }
 
 .yourgame-player-name {
@@ -34,6 +66,7 @@
     flex-wrap: wrap;
     gap: 6px;
     min-height: 100px;
+    perspective: 700px;   /* shared vanishing point so the hand tilts as one scene */
 }
 
 .yourgame-card {
@@ -42,14 +75,48 @@
     border-radius: 5px;
     border: 1px solid #888;
     background-color: #eee;
-    transition: transform 0.15s ease;
+    position: relative;
+    overflow: hidden;   /* clips the foil sheen to the card's rounded corners */
+    --rx: 0deg;
+    --ry: 0deg;
+    --lift: 0px;
+    transform: rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--lift));
+    transition: transform 0.1s ease-out, box-shadow 0.2s ease;
+
+    // Foil/holographic sheen — a diagonal light band that sweeps across the card
+    // as it tilts. Position is driven by --rx/--ry (the tilt angle), not the raw
+    // cursor coordinate, so it reads as light catching foil rather than a
+    // spotlight glued to the mouse.
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.25s ease, background-position 0.1s ease-out;
+        background: linear-gradient(75deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.5) 45%,
+            rgba(255, 255, 255, 0.8) 50%,
+            rgba(255, 255, 255, 0.5) 55%,
+            transparent 70%);
+        background-size: 200% 200%;
+        background-position: calc(50% + var(--ry) * 2%) calc(50% - var(--rx) * 2%);
+        mix-blend-mode: overlay;
+    }
+    &:hover::after {
+        opacity: 1;
+    }
+    &:hover {
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    }
 
     &.yourgame-playable {
         cursor: pointer;
         outline: 2px solid gold;
 
         &:hover {
-            transform: translateY(-6px);
+            --lift: -6px;
         }
     }
 }

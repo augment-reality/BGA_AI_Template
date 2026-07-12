@@ -7,12 +7,14 @@ class PlayerTurn {
     }
 
     onEnteringState(args, isCurrentPlayerActive) {
+        // Status bar title comes from the state's description/descriptionMyTurn
+        // (PlayerTurn.php) — the framework substitutes ${actplayer}/${you} itself.
+        // Don't override it here with setTitle(); a manual call doesn't get that
+        // substitution and leaves ${actplayer} blank for non-active players.
         this.bga.statusBar.removeActionButtons();
         if (!isCurrentPlayerActive) {
-            this.bga.statusBar.setTitle(_('${actplayer} must play a card or pass'));
             return;
         }
-        this.bga.statusBar.setTitle(_('${you} must play a card or pass'));
 
         // Make own hand cards clickable, using ids from PlayerTurn::getArgs()
         (args.playableCardsIds ?? []).forEach(cardId => {
@@ -92,8 +94,9 @@ export class Game {
 
     _buildPlayerTable(player) {
         const pid = String(player.id);
+        const isLocal = parseInt(pid) === this.bga.players.getCurrentPlayerId();
         document.getElementById('player-tables').insertAdjacentHTML('beforeend', `
-            <div id="player_area_${pid}" class="yourgame-player-area">
+            <div id="player_area_${pid}" class="yourgame-player-area ${isLocal ? 'yourgame-player-area-own' : 'yourgame-player-area-other'}">
                 <div class="yourgame-player-name" style="color:#${player.color}">${player.name}</div>
                 <div id="${pid}_cards" class="yourgame-player-cards"></div>
             </div>
@@ -105,12 +108,36 @@ export class Game {
         const handEl  = document.getElementById(`${localId}_cards`);
         if (!handEl) return;
         handEl.querySelectorAll('.yourgame-card').forEach(el => el.remove());
-        cards.forEach(card => handEl.insertAdjacentHTML('beforeend', this._cardHtml(card)));
+        cards.forEach(card => {
+            handEl.insertAdjacentHTML('beforeend', this._cardHtml(card));
+            this._attachCardTilt(document.getElementById(`card-${card.id}`));
+        });
     }
 
     _cardHtml(card) {
         return `<div id="card-${card.id}" class="yourgame-card yourgame-card-type-${card.type}"
                      data-card-id="${card.id}" data-card-type="${card.type}"></div>`;
+    }
+
+    // Foil-card tilt: tracks the cursor over the card and drives the --rx/--ry
+    // (tilt angle) and --mx/--my (glare position) CSS vars used by the sheen
+    // in yourgame.css. Pure visual flourish — no game logic here.
+    _attachCardTilt(el) {
+        if (!el) return;
+        const maxTiltDeg = 14;
+        el.addEventListener('mousemove', e => {
+            const rect = el.getBoundingClientRect();
+            const px = (e.clientX - rect.left) / rect.width;
+            const py = (e.clientY - rect.top) / rect.height;
+            el.style.setProperty('--ry', `${(px - 0.5) * maxTiltDeg * 2}deg`);
+            el.style.setProperty('--rx', `${(0.5 - py) * maxTiltDeg * 2}deg`);
+            el.style.setProperty('--mx', `${px * 100}%`);
+            el.style.setProperty('--my', `${py * 100}%`);
+        });
+        el.addEventListener('mouseleave', () => {
+            el.style.setProperty('--rx', '0deg');
+            el.style.setProperty('--ry', '0deg');
+        });
     }
 
     _adjustHandCount(pid, delta) {
