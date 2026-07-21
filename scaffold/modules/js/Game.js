@@ -146,19 +146,21 @@ export class Game {
     }
 
     // ─── Animation helper (ghost slide; always resolves) ────────────────────
+    // Default duration is deliberately long (2s, within the 1.5-3s house style) —
+    // BGA's own defaults read as rushed/mechanical; slow, readable motion is the
+    // template's default look. Tune per-notification, not here, if one specific
+    // animation genuinely needs to be quicker.
 
-    _animSlide(html, fromId, toId, ms = 500) {
+    _animSlide(html, fromId, toId, ms = 2000) {
+        if (!this.bga.gameui?.bgaAnimationsActive?.()) return Promise.resolve();
         const fromEl = document.getElementById(fromId);
         const toEl   = document.getElementById(toId);
         if (!fromEl || !toEl) return Promise.resolve();
         try {
-            const anim = this.bga.slideTemporaryObject(html, 'game_play_area', fromEl.id, toEl.id, ms, 0);
+            const anim = this.bga.gameui.slideTemporaryObject(html, 'game_play_area', fromEl.id, toEl.id, ms, 0);
             if (!anim) return Promise.resolve();
-            return new Promise(resolve => {
-                const fallback = setTimeout(resolve, ms + 200);
-                dojo.connect(anim, 'onEnd', () => { clearTimeout(fallback); resolve(); });
-                anim.play();
-            });
+            const fallback = new Promise(resolve => setTimeout(resolve, ms + 200));
+            return Promise.race([this.bga.gameui.bgaPlayDojoAnimation(anim), fallback]);
         } catch (_) {
             return Promise.resolve();
         }
@@ -176,7 +178,18 @@ export class Game {
 
     async notif_cardPlayed(args) {
         const pid = String(args.player_id);
-        document.getElementById(`card-${args.card_id}`)?.remove();
+        const cardEl = document.getElementById(`card-${args.card_id}`);
+        // Only the local viewer's own hand renders real card elements (see
+        // _renderHand — this scaffold doesn't visualize opponents' hands), so
+        // there's nothing to animate here for anyone else's play. Ghost-slide the
+        // real card to the board before removing it — see _animSlide's header
+        // comment for why this defaults to a slow 2s rather than BGA's usual
+        // snappier feel.
+        if (cardEl) {
+            const ghost = cardEl.outerHTML.replace(/\sid="[^"]*"/, '');
+            await this._animSlide(ghost, `${pid}_cards`, 'yourgame-board');
+        }
+        cardEl?.remove();
         this._adjustHandCount(pid, -1);
     }
 
